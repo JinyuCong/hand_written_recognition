@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>手写字母识别</title>
+    <style>
+        canvas {
+            border: 1px solid black;
+        }
+    </style>
+</head>
+<body>
+    <h1>手写字母识别</h1>
+    <canvas id="canvas" width="280" height="280"></canvas>
+    <br>
+    <button onclick="clearCanvas()">清除</button>
+    <button onclick="predict()">识别</button>
+    <h2>识别结果: <span id="result"></span></h2>
+
+    <script>
+        const canvas = document.getElementById("canvas");
+        const ctx = canvas.getContext("2d");
+        let isDrawing = false;
+
+        // 初始化画布
+        ctx.fillStyle = "white";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.strokeStyle = "black";
+        ctx.lineWidth = 10;
+
+        // 鼠标事件
+        canvas.addEventListener("mousedown", () => isDrawing = true);
+        canvas.addEventListener("mouseup", () => isDrawing = false);
+        canvas.addEventListener("mousemove", draw);
+
+        function draw(e) {
+            if (!isDrawing) return;
+            ctx.lineTo(e.offsetX, e.offsetY);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(e.offsetX, e.offsetY);
+        }
+
+        // 清除画布
+        function clearCanvas() {
+            ctx.fillStyle = "white";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            document.getElementById("result").innerText = "";
+        }
+
+        // 发送图像到后端
+        async function predict() {
+            const image = canvas.toDataURL("image/png");  // 获取画布图像
+            const blob = await fetch(image).then(res => res.blob());
+
+            const formData = new FormData();
+            formData.append("file", blob, "image.png");
+
+            const response = await fetch("http://localhost:8000/predict", {
+                method: "POST",
+                body: formData
+            });
+            const result = await response.json();
+            document.getElementById("result").innerText = result.predicted_class;
+        }
+    </script>
+</body>
+</html>
