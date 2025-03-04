@@ -1,30 +1,29 @@
-import cv2
-import glob
+from fastapi import FastAPI, UploadFile, File
+from fastapi.middleware.cors import CORSMiddleware
 import numpy as np
-import matplotlib.pyplot as plt
+import cv2
 import torch
-from model import LeNet
+from model.model import LeNet
 
-
-letter_to_label = {'0': 0, '1': 1, '2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9, 'A': 10, 'B': 11,
-                    'C': 12, 'D': 13, 'E': 14, 'F': 15, 'G': 16, 'H': 17, 'I': 18, 'J': 19, 'K': 20, 'L': 21, 'M': 22, 'N': 23,
-                    'O': 24, 'P': 25, 'Q': 26, 'R': 27, 'S': 28, 'T': 29, 'U': 30, 'V': 31, 'W': 32, 'X': 33, 'Y': 34, 'Z': 35}
+letter_to_label = {
+    '0': 0, '1': 1, '2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9, 'A': 10, 'B': 11,
+    'C': 12, 'D': 13, 'E': 14, 'F': 15, 'G': 16, 'H': 17, 'I': 18, 'J': 19, 'K': 20, 'L': 21, 'M': 22,
+    'N': 23, 'O': 24, 'P': 25, 'Q': 26, 'R': 27, 'S': 28, 'T': 29, 'U': 30, 'V': 31, 'W': 32, 'X': 33,
+    'Y': 34, 'Z': 35
+}
 
 label_to_letter = {label: letter for letter, label in letter_to_label.items()}
 
+app = FastAPI()
 
-def read_image(path: str) -> np.ndarray:
-    image = cv2.imread(path)
-    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-    _, binary = cv2.threshold(gray, 64, 255, cv2.THRESH_BINARY)
-    return binary
-
-
-def concatenate_images(image1: np.array, image2: np.array) -> np.array:
-    image1 = cv2.resize(image1, (64, 64))
-    image2 = cv2.resize(image2, (64, 64))
-    concatenated = np.concatenate((image1, image2), axis=1)
-    return concatenated
+# 允许跨域请求（CORS 处理）
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # 允许所有来源
+    allow_credentials=True,
+    allow_methods=["*"],  # 允许所有 HTTP 方法
+    allow_headers=["*"],  # 允许所有请求头
+)
 
 
 def split_letters(image, padding=5, min_width=10, min_height=10):
@@ -67,9 +66,6 @@ def split_letters(image, padding=5, min_width=10, min_height=10):
         # 裁剪字母
         letter = image[y:y+h, x:x+w]
 
-        plt.imshow(letter)
-        plt.show()
-
         chars.append(letter)
 
     return chars
@@ -77,10 +73,9 @@ def split_letters(image, padding=5, min_width=10, min_height=10):
 
 def sequence_recognition(img: np.array):
     model = LeNet()
-    model.load_state_dict(torch.load("./model.pth", map_location=torch.device('cpu')))
+    model.load_state_dict(torch.load("./model/model.pth", map_location=torch.device('cpu')))
     chars = split_letters(img, padding=3)
     results = []
-
     for char in chars:
         char = cv2.resize(char, (64, 64))
         char = torch.tensor(char).to(torch.float).view(1, 1, 64, 64)
@@ -91,15 +86,14 @@ def sequence_recognition(img: np.array):
     return results
 
 
-test_img1 = read_image("./test_images/4.png")
-test_img2 = read_image("./test_images/7.png")
-test_img3 = read_image("./test_images/h.png")
-test_img4 = read_image("./test_images/q.png")
+@app.post("/predict")
+async def predict(file: UploadFile = File(...)):
+    """处理前端传来的手写图片，并进行识别"""
+    contents = await file.read()
+    nparr = np.frombuffer(contents, np.uint8)
+    img = cv2.imdecode(nparr, cv2.IMREAD_GRAYSCALE)
 
-concat_img = concatenate_images(test_img1, test_img2)
-concat_img = concatenate_images(concat_img, test_img3)
-concat_img = concatenate_images(concat_img, test_img4)
+    predicted_char = sequence_recognition(img)
 
-res = sequence_recognition(concat_img)
-for i in res:
-    print(i)
+    return {"predicted_class": "".join(map(str, predicted_char))}  # 组合识别结果并返回
+

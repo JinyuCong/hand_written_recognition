@@ -6,7 +6,7 @@ let lastY = 0;
 
 // 设置画笔样式
 ctx.strokeStyle = "black";
-ctx.lineWidth = 5;
+ctx.lineWidth = 10;
 ctx.lineCap = "round";
 
 // 鼠标按下事件

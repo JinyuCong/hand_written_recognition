@@ -1,25 +1,80 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>手写字母识别</title>
-    <style>
-        canvas {
-            border: 1px solid black;
-        }
-    </style>
-</head>
-<body>
+<!DOCTYPE HTML>
+<!--
+	Photon by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+	<head>
+		<title>Photon by HTML5 UP</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="assets/css/main.css" />
+		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+	</head>
+	<body class="is-preload">
 
-    <h1>手写字母识别</h1>
-    <canvas id="canvas" width="280" height="280"></canvas>
-    <br>
-    <button onclick="clearCanvas()">清除</button>
-    <button onclick="predict()">识别</button>
-    <h2>识别结果: <span id="result"></span></h2>
+		<!-- Header -->
+			<section id="header">
+				<div class="inner">
+					<span class="icon solid major fa-cloud"></span>
+					<h1>Hi, I'm <strong>Photon</strong>, another fine<br />
+					little freebie from <a href="http://html5up.net">HTML5 UP</a>.</h1>
+					<p>Accumsan feugiat mi commodo erat lorem ipsum, sed magna<br />
+					lobortis feugiat sapien sed etiam volutpat accumsan.</p>
+					<ul class="actions special">
+						<li><a href="#one" class="button scrolly">Discover</a></li>
+					</ul>
+				</div>
+			</section>
 
-    <script src="script.js"></script>
+		<!-- One -->
+			<section id="one" class="main style1">
+				<div class="container">
+					<div class="row gtr-150">
+						<div class="col-6 col-12-medium">
+							<header class="major">
+								<h2>手写字母识别</h2>
+							</header>
+							<canvas id="canvas" width="640" height="640"></canvas>
+							<br>
+							<button onclick="clearCanvas()">清除</button>
+							<button onclick="predict()">识别</button>
+<!--							<p>Adipiscing a commodo ante nunc accumsan et interdum mi ante adipiscing. A nunc lobortis non nisl amet vis sed volutpat aclacus nascetur ac non. Lorem curae et ante amet sapien sed tempus adipiscing id accumsan.</p>-->
+						</div>
+						<div class="col-6 col-12-medium imp-medium">
+<!--							<span class="image fit"><img src="images/images.jpeg" alt="" /></span>-->
+							<h3>识别结果: <span id="result"></span></h3>
 
-</body>
+							<script src="script.js"></script>
+						</div>
+					</div>
+				</div>
+			</section>
+
+		<!-- Footer -->
+			<section id="footer">
+				<ul class="icons">
+					<li>
+						<a href="#" class="icon brands alt fa-github">
+							<span class="label">GitHub</span>
+						</a>
+						<a href="https://github.com/JinyuCong/hand_written_recognition">
+							https://github.com/JinyuCong/hand_written_recognition</a>
+					</li>
+				</ul>
+				<ul class="copyright">
+					<li>&copy; 2024/2025 - CONG Jinyu - YANG Ke - ZHANG Yu</li><li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
+				</ul>
+			</section>
+
+		<!-- Scripts -->
+			<script src="assets/js/jquery.min.js"></script>
+			<script src="assets/js/jquery.scrolly.min.js"></script>
+			<script src="assets/js/browser.min.js"></script>
+			<script src="assets/js/breakpoints.min.js"></script>
+			<script src="assets/js/util.js"></script>
+			<script src="assets/js/main.js"></script>
+
+	</body>
 </html>
