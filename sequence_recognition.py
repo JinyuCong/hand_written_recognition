@@ -38,7 +38,7 @@ def separate_characters(img: np.array) -> list[np.array]:
         zero_segments.append((start, len(pixel_sequence) - 1))
 
     split_index = []
-    for segment in zero_segments[1:-1]:
+    for segment in zero_segments:
         index_to_separate = (segment[0] + segment[1]) // 2
         split_index.append(index_to_separate)
 
@@ -47,15 +47,21 @@ def separate_characters(img: np.array) -> list[np.array]:
 
 def sequence_recognition(img: np.array):
     model = LeNet()
-    model.load_state_dict(torch.load("./model.pth"))
+    model.load_state_dict(torch.load("./model.pth", map_location='cpu'))
+    model.eval()
+
     chars = separate_characters(img)
+    # print(f"nb de caractères séparés : {len(chars)}")
+
     r = []
     for char in chars:
         char = cv2.resize(char, (64, 64))
-        char = torch.tensor(char).to(torch.float).view(1, 1, 64, 64)
-        res = model(char)
-        res = torch.argmax(res, dim=1)
-        r.append(res)
+        char = char / 255.0 # 新增：归一化到 [0,1]
+        char = torch.tensor(char, dtype=torch.float32, device='cpu').view(1, 1, 64, 64)
+        with torch.no_grad():
+            res = model(char)
+            res = torch.argmax(res, dim=1)
+        r.append(res.item())
     return r
 
 
@@ -67,4 +73,5 @@ concat_img = concatenate_images(test_img1, test_img2)
 concat_img = concatenate_images(concat_img, test_img3)
 
 r = sequence_recognition(concat_img)
+# print(len(r))
 print(r[3])
