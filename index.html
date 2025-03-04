@@ -58,16 +58,22 @@
 								ctx.lineWidth = 10;
 
 								// 鼠标事件
-								canvas.addEventListener("mousedown", () => isDrawing = true);
-								canvas.addEventListener("mouseup", () => isDrawing = false);
+								canvas.addEventListener("mousedown", (e) => {
+									isDrawing = true;
+									ctx.beginPath();  // 开始新的路径，防止上一笔的影响
+									ctx.moveTo(e.offsetX, e.offsetY);  // 直接移动到当前落笔点
+								});
+
+								canvas.addEventListener("mouseup", () => {
+									isDrawing = false;
+								});
+
 								canvas.addEventListener("mousemove", draw);
 
 								function draw(e) {
 									if (!isDrawing) return;
 									ctx.lineTo(e.offsetX, e.offsetY);
 									ctx.stroke();
-									ctx.beginPath();
-									ctx.moveTo(e.offsetX, e.offsetY);
 								}
 
 								// 清除画布
