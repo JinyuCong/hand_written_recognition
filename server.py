@@ -24,6 +24,39 @@ app.add_middleware(
     allow_methods=["*"],  # 允许所有 HTTP 方法
     allow_headers=["*"],  # 允许所有请求头
 )
+# 新增
+def sort_contours(contours):
+    """ 按从左到右，再从上到下排序轮廓 """
+    bounding_boxes = [cv2.boundingRect(ctr) for ctr in contours]
+
+    # 将轮廓按行分组（假设字符大小相近，y 坐标相近的归为同一行）
+    lines = []
+    threshold = 20  # 行间最小 y 方向间距
+
+    for x, y, w, h in sorted(bounding_boxes, key=lambda b: b[1]):  # 先按 y 排序
+        placed = False
+        for line in lines:
+            if abs(line[-1][1] - y) < threshold:  # y 坐标相近，认为是同一行
+                line.append((x, y, w, h))
+                placed = True
+                break
+        if not placed:
+            lines.append([(x, y, w, h)])
+
+    # 每一行按 x 坐标从左到右排序
+    sorted_boxes = [sorted(line, key=lambda b: b[0]) for line in lines]
+
+    # 按行顺序重新整理轮廓
+    sorted_contours = []
+    for line in sorted_boxes:
+        for box in line:
+            for ctr in contours:
+                if cv2.boundingRect(ctr) == box:
+                    sorted_contours.append(ctr)
+                    break
+
+    return sorted_contours
+# 新增结束
 
 
 def split_letters(image, padding=5, min_width=10, min_height=10):
@@ -44,7 +77,11 @@ def split_letters(image, padding=5, min_width=10, min_height=10):
     contours, _ = cv2.findContours(binary, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
     # 按从左到右排序轮廓
-    contours = sorted(contours, key=lambda ctr: cv2.boundingRect(ctr)[0])
+    # contours = sorted(contours, key=lambda ctr: cv2.boundingRect(ctr)[0])
+
+    # 新增
+    contours = sort_contours(contours)
+    # 新增结束
 
     chars = []
 
