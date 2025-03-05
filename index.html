@@ -37,8 +37,12 @@
 		<!-- Header -->
 		<section id="header">
 			<div class="inner">
-				<h1>字符识别</h1>
-				<p>上传或粘贴图片进行识别</p>
+				<h1>Reconnaissance de l'écriture manuscrite</h1>
+				<h4>2 façons pour reconnaître l'écriture :</h4>
+				<p>
+				1. Écrire directement sur la toile des lettres en majuscule ou des chiffres ;
+				<br>
+				2. Télécharger une image comprenant des lettres en majuscule ou des chiffres. </p>
 			</div>
 		</section>
 
@@ -51,9 +55,10 @@
 							<h2>Reconnaissance de lettres manuscrites</h2>
 						</header>
 <!--						<canvas id="canvas" width="1280" height="640"></canvas>-->
-						<canvas id="canvas" width="640" height="640"></canvas>
+						<canvas id="canvas" width="600" height="300"></canvas>
 						<br>
-						<button onclick="clearCanvas()">Effacer</button>
+						<button onclick="clearCanvas()" style="margin-right: 20px;">Effacer</button>
+
 						<button onclick="predict()">Reconnaître</button>
 					</div>
 					<div class="recognition-column">
@@ -64,11 +69,15 @@
 						<button onclick="document.getElementById('fileInput').click()">Télécharger une image</button>
 						<img id="imagePreview" src="" style="max-width: 100%; display: none;">
 						<br>
+						<br>
+						<br>
 						<button onclick="uploadImage()">Reconnaître</button>
 					</div>
 				</div>
 				<div class="row gtr-150">
 					<div class="col-12">
+						<br>
+						<br>
 						<h3>Résultat de la reconnaissance: <span id="result"></span></h3>
 					</div>
 				</div>

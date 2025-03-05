@@ -6,7 +6,7 @@ let lastY = 0;
 
 // 设置画笔样式
 ctx.strokeStyle = "black";
-ctx.lineWidth = 10;
+ctx.lineWidth = 8;
 ctx.lineCap = "round";
 
 // 鼠标按下事件
@@ -47,12 +47,14 @@ async function predict() {
     const blob = await fetch(image).then(res => res.blob());
 
     const formData = new FormData();
-    formData.append("file", blob, "image.png");
+    formData.append("file", blob, "canvas.png");  // 添加默认文件名
+    formData.append("from_canvas", "true");  // 让后端知道这是手写板输入
 
-    const response = await fetch("http://localhost:8000/predict", {
+    const response = await fetch("http://127.0.0.1:8000/predict", {
         method: "POST",
         body: formData
     });
+
     const result = await response.json();
     document.getElementById("result").innerText = result.predicted_class;
 }
@@ -83,7 +85,7 @@ document.getElementById("pasteBox").addEventListener("paste", function (event) {
             reader.onload = function (e) {
                 document.getElementById("imagePreview").src = e.target.result;
                 document.getElementById("imagePreview").style.display = "block";
-                imageData = blob;
+                imageData = blob;  // 赋值给 imageData
             };
             reader.readAsDataURL(blob);
             break;
@@ -96,22 +98,27 @@ function uploadImage() {
         alert("请先上传或粘贴图片");
         return;
     }
+
     let formData = new FormData();
-    formData.append("file", imageData);
+
+    if (imageData instanceof File) {
+        formData.append("file", imageData);  // 直接上传 File
+    } else {
+        formData.append("file", imageData, "pasted_image.png");  // 确保粘贴图片有文件名
+    }
 
     fetch("http://127.0.0.1:8000/predict", {
         method: "POST",
         body: formData
     })
-        .then(response => response.json())
-        .then(data => {
-            console.log("API 返回:", data);  // 👉 这里查看 API 返回的数据
-            if (data.predicted_class) {
-                document.getElementById("result").innerText = data.predicted_class;
-            } else {
-                document.getElementById("result").innerText = "识别失败: " + (data.error || "未知错误");
-            }
-        })
-        .catch(error => console.error("请求出错:", error));
-
+    .then(response => response.json())
+    .then(data => {
+        console.log("API 返回:", data);
+        if (data.predicted_class) {
+            document.getElementById("result").innerText = data.predicted_class;
+        } else {
+            document.getElementById("result").innerText = "识别失败: " + (data.error || "未知错误");
+        }
+    })
+    .catch(error => console.error("请求出错:", error));
 }
