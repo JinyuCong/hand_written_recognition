@@ -11,46 +11,68 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 		<link rel="stylesheet" href="assets/css/main.css" />
 		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+		<style>
+            /* 添加自定义样式 */
+            #recognition-section {
+                display: flex;
+                justify-content: space-between;
+            }
+            .recognition-column {
+                flex: 1;
+                margin: 0 5px;
+				text-align: center;
+            }
+			#canvas {
+                border: 2px solid #000;
+                border-radius: 10px;
+				align-self: center;
+            }
+			#fileInput {
+				display: none;
+			}
+        </style>
 	</head>
 	<body class="is-preload">
 
 		<!-- Header -->
-			<section id="header">
-				<div class="inner">
-					<span class="icon solid major fa-cloud"></span>
-					<h1>Hi, I'm <strong>Photon</strong>, another fine<br />
-					little freebie from <a href="http://html5up.net">HTML5 UP</a>.</h1>
-					<p>Accumsan feugiat mi commodo erat lorem ipsum, sed magna<br />
-					lobortis feugiat sapien sed etiam volutpat accumsan.</p>
-					<ul class="actions special">
-						<li><a href="#one" class="button scrolly">Discover</a></li>
-					</ul>
-				</div>
-			</section>
+		<section id="header">
+			<div class="inner">
+				<h1>字符识别</h1>
+				<p>上传或粘贴图片进行识别</p>
+			</div>
+		</section>
 
 		<!-- One -->
-			<section id="one" class="main style1">
-				<div class="container">
-					<div class="row gtr-150">
-						<div class="col-6 col-12-medium">
-							<header class="major">
-								<h2>手写字母识别</h2>
-							</header>
-							<canvas id="canvas" width="640" height="640"></canvas>
-							<br>
-							<button onclick="clearCanvas()">清除</button>
-							<button onclick="predict()">识别</button>
-<!--							<p>Adipiscing a commodo ante nunc accumsan et interdum mi ante adipiscing. A nunc lobortis non nisl amet vis sed volutpat aclacus nascetur ac non. Lorem curae et ante amet sapien sed tempus adipiscing id accumsan.</p>-->
-						</div>
-						<div class="col-6 col-12-medium imp-medium">
-<!--							<span class="image fit"><img src="images/images.jpeg" alt="" /></span>-->
-							<h3>识别结果: <span id="result"></span></h3>
-
-							<script src="script.js"></script>
-						</div>
+		<section id="one" class="main style1">
+			<div class="container">
+				<div id="recognition-section">
+					<div class="recognition-column">
+						<header class="major">
+							<h2>Reconnaissance de lettres manuscrites</h2>
+						</header>
+						<canvas id="canvas" width="1280" height="640"></canvas>
+						<br>
+						<button onclick="clearCanvas()">Effacer</button>
+						<button onclick="predict()">Reconnaître</button>
+					</div>
+					<div class="recognition-column">
+						<header class="major">
+							<h2>Télécharger une image</h2>
+						</header>
+						<input type="file" id="fileInput" accept="image/*">
+						<button onclick="document.getElementById('fileInput').click()">Télécharger une image</button>
+						<img id="imagePreview" src="" style="max-width: 100%; display: none;">
+						<br>
+						<button onclick="uploadImage()">Reconnaître</button>
 					</div>
 				</div>
-			</section>
+				<div class="row gtr-150">
+					<div class="col-12">
+						<h3>Résultat de la reconnaissance: <span id="result"></span></h3>
+					</div>
+				</div>
+			</div>
+		</section>
 
 		<!-- Footer -->
 			<section id="footer">
@@ -75,6 +97,8 @@
 			<script src="assets/js/breakpoints.min.js"></script>
 			<script src="assets/js/util.js"></script>
 			<script src="assets/js/main.js"></script>
-
+			<script src="script.js"></script>
 	</body>
 </html>
+
+
