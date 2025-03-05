@@ -1,0 +1,129 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+	<title>字符识别</title>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+	<link rel="stylesheet" href="assets/css/main.css" />
+	<noscript>
+		<link rel="stylesheet" href="assets/css/noscript.css" />
+	</noscript>
+</head>
+
+<body class="is-preload">
+
+	<!-- Header -->
+	<section id="header">
+		<div class="inner">
+			<h1>字符识别</h1>
+			<p>上传或粘贴图片进行识别</p>
+		</div>
+	</section>
+
+	<!-- Main Section -->
+	<section id="one" class="main style1">
+		<div class="container">
+			<div class="row gtr-150">
+				<div class="col-6 col-12-medium">
+					<header class="major">
+						<h2>上传/粘贴图片</h2>
+					</header>
+					<input type="file" id="fileInput" accept="image/*">
+					<div id="pasteBox" contenteditable="true" class="paste-area">粘贴图片到这里</div>
+					<img id="imagePreview" src="" style="max-width: 100%; display: none;">
+					<br>
+					<button onclick="uploadImage()">识别</button>
+				</div>
+				<div class="col-6 col-12-medium imp-medium">
+					<h3>识别结果: <span id="result"></span></h3>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- Footer -->
+	<section id="footer">
+		<ul class="icons">
+			<li>
+				<a href="#" class="icon brands alt fa-github">
+					<span class="label">GitHub</span>
+				</a>
+				<a
+					href="https://github.com/JinyuCong/hand_written_recognition">https://github.com/JinyuCong/hand_written_recognition</a>
+			</li>
+		</ul>
+		<ul class="copyright">
+			<li>&copy; 2024/2025 - CONG Jinyu - YANG Ke - ZHANG Yu</li>
+			<li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
+		</ul>
+	</section>
+
+	<!-- Scripts -->
+	<script>
+		let imageData = null;
+
+		document.getElementById("fileInput").addEventListener("change", function (event) {
+			let file = event.target.files[0];
+			if (file) {
+				let reader = new FileReader();
+				reader.onload = function (e) {
+					document.getElementById("imagePreview").src = e.target.result;
+					document.getElementById("imagePreview").style.display = "block";
+					imageData = file;
+				};
+				reader.readAsDataURL(file);
+			}
+		});
+
+		document.getElementById("pasteBox").addEventListener("paste", function (event) {
+			let items = (event.clipboardData || event.originalEvent.clipboardData).items;
+			for (let item of items) {
+				if (item.type.indexOf("image") !== -1) {
+					let blob = item.getAsFile();
+					let reader = new FileReader();
+					reader.onload = function (e) {
+						document.getElementById("imagePreview").src = e.target.result;
+						document.getElementById("imagePreview").style.display = "block";
+						imageData = blob;
+					};
+					reader.readAsDataURL(blob);
+					break;
+				}
+			}
+		});
+
+		function uploadImage() {
+			if (!imageData) {
+				alert("请先上传或粘贴图片");
+				return;
+			}
+			let formData = new FormData();
+			formData.append("file", imageData);
+
+			fetch("http://127.0.0.1:8000/predict", {
+				method: "POST",
+				body: formData
+			})
+				.then(response => response.json())
+				.then(data => {
+					console.log("API 返回:", data);  // 👉 这里查看 API 返回的数据
+					if (data.predicted_class) {
+						document.getElementById("result").innerText = data.predicted_class;
+					} else {
+						document.getElementById("result").innerText = "识别失败: " + (data.error || "未知错误");
+					}
+				})
+				.catch(error => console.error("请求出错:", error));
+
+		}
+	</script>
+	<script src="assets/js/jquery.min.js"></script>
+	<script src="assets/js/jquery.scrolly.min.js"></script>
+	<script src="assets/js/browser.min.js"></script>
+	<script src="assets/js/breakpoints.min.js"></script>
+	<script src="assets/js/util.js"></script>
+	<script src="assets/js/main.js"></script>
+</body>
+
+</html>
