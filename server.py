@@ -16,37 +16,37 @@ label_to_letter = {label: letter for letter, label in letter_to_label.items()}
 
 app = FastAPI()
 
-# 允许跨域请求（CORS 处理）
+# Autoriser les requêtes inter-domaines (traitement CORS)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # 允许所有来源
+    allow_origins=["*"],  # Autoriser toutes les sources
     allow_credentials=True,
-    allow_methods=["*"],  # 允许所有 HTTP 方法
-    allow_headers=["*"],  # 允许所有请求头
+    allow_methods=["*"],  # Autoriser toutes les méthodes HTTP
+    allow_headers=["*"],  # Autoriser tous les en-têtes de requête
 )
 # 新增
 def sort_contours(contours):
-    """ 按从左到右，再从上到下排序轮廓 """
+    """ Classer les descriptifs de gauche à droite, puis de haut en bas """
     bounding_boxes = [cv2.boundingRect(ctr) for ctr in contours]
 
-    # 将轮廓按行分组（假设字符大小相近，y 坐标相近的归为同一行）
+    # Regrouper les contours par ligne (en supposant que des tailles de caractères et des coordonnées y similaires soient regroupées dans la même ligne)
     lines = []
-    threshold = 20  # 行间最小 y 方向间距
+    threshold = 20  # espacement minimal entre les lignes dans le sens des ordonnées
 
-    for x, y, w, h in sorted(bounding_boxes, key=lambda b: b[1]):  # 先按 y 排序
+    for x, y, w, h in sorted(bounding_boxes, key=lambda b: b[1]):
         placed = False
         for line in lines:
-            if abs(line[-1][1] - y) < threshold:  # y 坐标相近，认为是同一行
+            if abs(line[-1][1] - y) < threshold:
                 line.append((x, y, w, h))
                 placed = True
                 break
         if not placed:
             lines.append([(x, y, w, h)])
 
-    # 每一行按 x 坐标从左到右排序
+    # Chaque ligne est triée de gauche à droite par la coordonnée x
     sorted_boxes = [sorted(line, key=lambda b: b[0]) for line in lines]
 
-    # 按行顺序重新整理轮廓
+    # Réorganisation de l'aperçu dans l'ordre des lignes
     sorted_contours = []
     for line in sorted_boxes:
         for box in line:
@@ -56,21 +56,21 @@ def sort_contours(contours):
                     break
 
     return sorted_contours
-# 新增结束
+
 
 def split_letters(image, padding=5, min_width=10, min_height=10, space_threshold=20, line_threshold=15,
                   from_canvas=False):
     """
-    增强的字符分割：检测换行和空格。
+    Segmentation améliorée des caractères : détection des nouvelles lignes et des espaces.
 
-    参数:
-        image (np.array): 输入图片（灰度图）。
-        padding (int): 字符边界扩展的像素值。
-        min_width (int): 过滤小噪声的最小宽度。
-        min_height (int): 过滤小噪声的最小高度。
-        space_threshold (int): 插入空格的最小间距。
-        line_threshold (int): 行间距的阈值（大于该值视为换行）。
-        from_canvas (bool): 是否来自手写板输入。
+    Paramètres.
+        image (np.array) : image d'entrée (échelle de gris).
+        padding (int) : valeur en pixel pour l'extension des limites du caractère.
+        min_width (int) : Largeur minimale pour filtrer les petits bruits.
+        min_height (int) : hauteur minimale pour le filtrage des petits bruits.
+        space_threshold (int) : espacement minimum pour l'insertion d'espaces.
+        line_threshold (int) : Seuil pour l'espacement des lignes (un espacement supérieur à cette valeur est considéré comme un saut de ligne).
+        from_canvas (bool) : si l'entrée se fait à partir du bloc-notes.
     """
     _, binary = cv2.threshold(image, 127, 255, cv2.THRESH_BINARY_INV)
     contours, _ = cv2.findContours(binary, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
@@ -83,11 +83,11 @@ def split_letters(image, padding=5, min_width=10, min_height=10, space_threshold
 
     for x, y, w, h in bounding_boxes:
         if w < min_width or h < min_height:
-            continue  # 过滤噪声
+            continue
 
         if prev_y is not None and abs(y - prev_y) > line_threshold:
-            lines.append(sorted(current_line, key=lambda b: b[0]))  # 结束当前行
-            current_line = []  # 开始新行
+            lines.append(sorted(current_line, key=lambda b: b[0]))
+            current_line = []
 
         current_line.append((x, y, w, h))
         prev_y = y
@@ -102,14 +102,14 @@ def split_letters(image, padding=5, min_width=10, min_height=10, space_threshold
             if prev_x is not None:
                 space_width = x - (prev_x + prev_w)
                 if space_width > space_threshold and not from_canvas:
-                    chars.append(" ")  # 仅在不是手写板输入时插入空格
+                    chars.append(" ")
 
             prev_x, prev_w = x, w
             letter = image[y:y + h, x:x + w]
             chars.append(letter)
 
         if not from_canvas:
-            chars.append("\n")  # 仅在不是手写板输入时添加换行
+            chars.append("\n")
 
     return chars
 
@@ -118,13 +118,13 @@ def sequence_recognition(img: np.array, from_canvas=False):
     model = LeNet()
     model.load_state_dict(torch.load("./model/model.pth", map_location=torch.device('cpu')))
 
-    chars = split_letters(img, padding=3, from_canvas=from_canvas)  # 传递 `from_canvas`
+    chars = split_letters(img, padding=3, from_canvas=from_canvas)  # transfer canvas `from_canvas`
 
     results = []
     for char in chars:
-        if isinstance(char, str):  # 处理空格或换行
+        if isinstance(char, str):
             if from_canvas and char in [" ", "\n"]:
-                continue  # 手写板不考虑空格和换行
+                continue
             results.append(char)
             continue
 
@@ -140,7 +140,7 @@ def sequence_recognition(img: np.array, from_canvas=False):
 
 @app.post("/predict")
 async def predict(file: UploadFile = File(...), from_canvas: bool = Form(False)):
-    """处理前端传来的手写图片或上传图片"""
+    """Traiter les images manuscrites ou téléchargées à partir de l'interface utilisateur"""
     contents = await file.read()
     nparr = np.frombuffer(contents, np.uint8)
     img = cv2.imdecode(nparr, cv2.IMREAD_GRAYSCALE)

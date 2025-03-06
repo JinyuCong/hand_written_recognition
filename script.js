@@ -4,25 +4,25 @@ let isDrawing = false;
 let lastX = 0;
 let lastY = 0;
 
-// 设置画笔样式
+// Réglage du style de pinceau
 ctx.strokeStyle = "black";
 ctx.lineWidth = 8;
 ctx.lineCap = "round";
 
-// 鼠标按下事件
+// événement de clic de souris
 canvas.addEventListener("mousedown", (e) => {
     isDrawing = true;
     [lastX, lastY] = [e.offsetX, e.offsetY];
 });
 
-// 鼠标移动事件
+// événement de survol
 canvas.addEventListener("mousemove", draw);
 
-// 鼠标抬起事件
+// événement enlève souris
 canvas.addEventListener("mouseup", () => isDrawing = false);
 canvas.addEventListener("mouseout", () => isDrawing = false);
 
-// 绘制函数
+// fonction de traçage
 function draw(e) {
     if (!isDrawing) return;
 
@@ -34,21 +34,21 @@ function draw(e) {
     [lastX, lastY] = [e.offsetX, e.offsetY];
 }
 
-// 清除画布
+// Effacer le canevas
 function clearCanvas() {
     ctx.fillStyle = "white";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     document.getElementById("result").innerText = "";
 }
 
-// 发送图像到后端
+// Envoi d'images au backend
 async function predict() {
-    const image = canvas.toDataURL("image/png");  // 获取画布图像
+    const image = canvas.toDataURL("image/png");  // Obtenir une image de la toile
     const blob = await fetch(image).then(res => res.blob());
 
     const formData = new FormData();
-    formData.append("file", blob, "canvas.png");  // 添加默认文件名
-    formData.append("from_canvas", "true");  // 让后端知道这是手写板输入
+    formData.append("file", blob, "canvas.png");  // Ajouter un nom de fichier par défaut
+    formData.append("from_canvas", "true");  // Indiquer au backend qu'il s'agit d'un pad input
 
     const response = await fetch("http://127.0.0.1:8000/predict", {
         method: "POST",
@@ -85,7 +85,7 @@ document.getElementById("pasteBox").addEventListener("paste", function (event) {
             reader.onload = function (e) {
                 document.getElementById("imagePreview").src = e.target.result;
                 document.getElementById("imagePreview").style.display = "block";
-                imageData = blob;  // 赋值给 imageData
+                imageData = blob;
             };
             reader.readAsDataURL(blob);
             break;
@@ -95,16 +95,16 @@ document.getElementById("pasteBox").addEventListener("paste", function (event) {
 
 function uploadImage() {
     if (!imageData) {
-        alert("请先上传或粘贴图片");
+        alert("Veuillez d'abord télécharger ou coller l'image");
         return;
     }
 
     let formData = new FormData();
 
     if (imageData instanceof File) {
-        formData.append("file", imageData);  // 直接上传 File
+        formData.append("file", imageData);  // Téléchargement direct Fichier
     } else {
-        formData.append("file", imageData, "pasted_image.png");  // 确保粘贴图片有文件名
+        formData.append("file", imageData, "pasted_image.png");
     }
 
     fetch("http://127.0.0.1:8000/predict", {
@@ -113,12 +113,12 @@ function uploadImage() {
     })
     .then(response => response.json())
     .then(data => {
-        console.log("API 返回:", data);
+        console.log("API return:", data);
         if (data.predicted_class) {
             document.getElementById("result").innerText = data.predicted_class;
         } else {
-            document.getElementById("result").innerText = "识别失败: " + (data.error || "未知错误");
+            document.getElementById("result").innerText = "échec de la reconnaissance: " + (data.error || "erreur inconnue");
         }
     })
-    .catch(error => console.error("请求出错:", error));
+    .catch(error => console.error("Erreur de demande:", error));
 }
