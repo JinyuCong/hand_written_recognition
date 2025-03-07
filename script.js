@@ -6,7 +6,7 @@ let lastY = 0;
 
 // Réglage du style de pinceau
 ctx.strokeStyle = "black";
-ctx.lineWidth = 8;
+ctx.lineWidth = 10;
 ctx.lineCap = "round";
 
 // événement de clic de souris
