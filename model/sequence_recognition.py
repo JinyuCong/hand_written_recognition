@@ -29,42 +29,36 @@ def concatenate_images(image1: np.array, image2: np.array) -> np.array:
 
 def split_letters(image, padding=5, min_width=10, min_height=10):
     """
-    从图片中分割字母并保存为单独的图片。
+    Segmenter les lettres d'une image
+    et les enregistrer sous forme d'images individuelles.
 
-    参数:
-        image_path (str): 输入图片路径。
-        output_folder (str): 保存字母图片的文件夹路径。
-        min_width (int): 字母的最小宽度（过滤小噪声）。
-        min_height (int): 字母的最小高度（过滤小噪声）。
+    PM:
+        image (np.array) : image d'entrée en niveaux de gris ;
+        padding (int): marge ajouté autour de chaque caractère ;
+        min_width (int): largeur minimale d'un caractère pour filtrer le bruit ;
+        min_height (int): hauteur minimale.
     """
 
-    # 二值化处理（反转颜色，字母为白色，背景为黑色）
+    # Binariser l'image : les lettres deviennent blanches sur fond noir
     _, binary = cv2.threshold(image, 127, 255, cv2.THRESH_BINARY_INV)
-
-    # 查找轮廓
     contours, _ = cv2.findContours(binary, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
-    # 按从左到右排序轮廓
+    # Contours de gauche à droite
     contours = sorted(contours, key=lambda ctr: cv2.boundingRect(ctr)[0])
-
     chars = []
 
-    # 遍历轮廓并裁剪字母
     for i, contour in enumerate(contours):
-        # 获取轮廓的边界框
         x, y, w, h = cv2.boundingRect(contour)
 
-        # 过滤太小的轮廓（噪声）
-        if w < min_width or h < min_height:
+        if w < min_width or h < min_height: # Parcours des contours et découpage des lettres
             continue
 
-        # 扩展边界框（留出边距）
+        # Ajouter des marges
         x = max(x - padding, 0)
         y = max(y - padding, 0)
         w = min(w + 2 * padding, image.shape[1] - x)
         h = min(h + 2 * padding, image.shape[0] - y)
 
-        # 裁剪字母
         letter = image[y:y+h, x:x+w]
 
         plt.imshow(letter)
