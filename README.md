@@ -28,7 +28,8 @@ L’ensemble de données ainsi préparé permet d'entraîner un modèle capable 
 
 ## 3. Méthodologie  
 
-Dans le **back-end**, nous avons utilisé **LeNet**, un réseau de neurones d'apprentissage profond, pour entraîner des lettres majuscules et des chiffres arabes (0-9).  
+Dans le **back-end**, nous avons utilisé **LeNet**, un réseau de neurones d'apprentissage profond, pour entraîner des lettres majuscules et des chiffres arabes (0-9).
+Nous avons utilisé le jeu de données du lien suivant pour l'entraînement : **https://www.kaggle.com/datasets/preatcher/standard-ocr-dataset**
 Après **100 époques d'entraînement sur plus de 10 000 images**, nous avons obtenu une **précision de test de 88 %**.   
 Après avoir enregistré les paramètres du modèle, il a été connecté à la page html frontale via l'interface **FastAPI** pour réaliser que les caractères manuscrits peuvent être écrits à la main et reconnus dans la page frontale. Étant donné que la formation utilise des caractères informatiques, les caractères manuscrits peuvent ne pas être très précis et nous devons essayer d'imiter la police d'écriture digitale afin de les identifier avec précision.
 
