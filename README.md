@@ -1,9 +1,9 @@
 # Interfaces web pour le TAL & Réseaux de neurones
 
 ## Auteurs
-**- CONG Jinyu**  (INALCO 43017468)
-**- YANG Ke** (Nanterre 44017400) 
-**- ZHANG Yu**  (Nanterre 43010766) 
+- **CONG Jinyu**  (INALCO 43017468)
+- **YANG Ke** (Nanterre 44017400) 
+- **ZHANG Yu**  (Nanterre 43010766) 
 
 ---
 
