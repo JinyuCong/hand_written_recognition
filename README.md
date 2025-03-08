@@ -53,14 +53,14 @@ Après avoir enregistré les paramètres du modèle, il a été connecté à la 
 - **Optimisation de l'expérience utilisateur**: gestion des erreurs et amélioration du design.  
 
 ### **3.2 Gestion de projet**  
-#### - **Outils**  
+- #### **Outils**  
   - **GitHub** : gestion du code source.  
   - **FastAPI** : développement du serveur.  
   - **PyTorch** : entraînement du modèle.  
   - **OpenCV** : prétraitement des images.  
   - **HTML/CSS/JavaScript** : interface utilisateur.  
 
-#### - **Ressources**  
+- #### **Ressources**  
   - Tutoriels sur **FastAPI** et **PyTorch**.  
   - Jeux de données open-source en OCR.  
 
@@ -86,8 +86,8 @@ Pour éviter les erreurs de transmission, nous avons activé **CORS Middleware**
 
 ### **Interface web et fonctionnalités**  
 L'interface permet d'envoyer une image à l’API pour analyse via **deux méthodes** :  
-1. **Écriture manuscrite** : Une zone de dessin HTML permet aux utilisateurs d’écrire directement des lettres ou des chiffres à l’aide de la souris ou d’un écran tactile. Une fois l’écriture terminée, ils peuvent cliquer sur un bouton pour envoyer l’image générée au serveur pour reconnaissance.  
-2. **Téléversement ou collage d’image** : Les utilisateurs peuvent téléverser une image depuis leur appareil ou coller une image directement dans une zone dédiée. L’aperçu de l’image apparaît immédiatement, puis elle est transmise au serveur pour analyse.  
+- **Écriture manuscrite** : Une zone de dessin HTML permet aux utilisateurs d’écrire directement des lettres ou des chiffres à l’aide de la souris ou d’un écran tactile. Une fois l’écriture terminée, ils peuvent cliquer sur un bouton pour envoyer l’image générée au serveur pour reconnaissance.  
+- **Téléversement ou collage d’image** : Les utilisateurs peuvent téléverser une image depuis leur appareil ou coller une image directement dans une zone dédiée. L’aperçu de l’image apparaît immédiatement, puis elle est transmise au serveur pour analyse.  
 
 Le **résultat s'affiche en temps réel**, immédiatement sous l’image.  
 
@@ -101,34 +101,35 @@ Le **résultat s'affiche en temps réel**, immédiatement sous l’image.
 
 
 Dans l’ensemble, l’interface web offre une interaction fluide et une connexion stable avec le modèle, avec un temps de réponse rapide. Cependant, certaines limites et améliorations potentielles seront détaillées dans la section suivante.
+
 ---
 
 ## 5. Discussion  
 
-### **Succès**  
+### **5.1 Succès**  
 **Reconnaissance correcte** des chiffres et lettres imprimées.  
 **Interface fluide**, interaction en temps réel avec l’API.  
 **Système modulaire**, extensible à d'autres types de caractères.  
 
-### **Défis**  
+### **5.2 Défis**  
 **Précision plus faible** sur certaines écritures manuscrites (ex. "0" vs "O", "I" vs "L").  
 **Segmentation des caractères imparfaite** sur certains cas.  
 **Difficulté avec certains styles d'écriture**.  
 
-### **Perspectives**  
+### **5.3 Perspectives**  
 Entraîner un **modèle plus avancé** (ResNet, MobileNet).  
 **Améliorer la segmentation** des caractères.  
 **Augmenter le jeu de données** pour plus de diversité.  
 
 ---
 
-## **Installation & Usage**  
+## **6. Installation & Usage**  
 
-### **Prérequis**  
+### **6.1 Prérequis**  
 - **Python 3.11+**  
 - **FastAPI, PyTorch, OpenCV, NumPy**  
 
-### **Exécution**  
+### **6.2 Exécution**  
 **a. Installer les dépendances**  
 **b. Lancer le serveur FastAPI**: uvicorn server:app --host 0.0.0.0 --port 8000 --reload
 **c. Ouvrir l'interface web**: Ouvrir `index.html` dans un navigateur.
