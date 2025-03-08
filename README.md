@@ -132,6 +132,6 @@ Dans l’ensemble, l’interface web offre une interaction fluide et une connexi
 
 ### **Exécution**  
 **a. Installer les dépendances**  
-**b. Lancer le serveur FastAPI**: uvicorn server:app --host 0.0.0.0 --port 8000 --reload
-**c. Ouvrir l'interface web**: Ouvrir `index.html` dans un navigateur.
+**b. Lancer le serveur FastAPI**: uvicorn server:app --host 0.0.0.0 --port 8000 --reload  
+**c. Ouvrir l'interface web**: Ouvrir `index.html` dans un navigateur.  
 **d. Tester l'API**
