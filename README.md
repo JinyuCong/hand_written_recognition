@@ -93,11 +93,11 @@ Le **résultat s'affiche en temps réel**, immédiatement sous l’image.
 
 ### **Exemples de reconnaissance**  
 
-- **Image importée** → `ELLE EST CONTENTE`  
+- #### **Image importée** → `ELLE EST CONTENTE`  
 ![contente_output](model/test_images/contente_output.png)
-- **Saisie manuscrite** → `5 POMMES`  
+- #### **Saisie manuscrite** → `5 POMMES`  
 ![pomme_output](model/test_images/pomme_output.png)
-- **Saisie manuscrite** → `1 ÉTOILE` (problème de confusion entre "I" et "L").  
+- #### **Saisie manuscrite** → `1 ÉTOILE` (problème de confusion entre "I" et "L").  
 ![etoile_output](model/test_images/etoile_output.png)
 
 
