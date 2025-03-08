@@ -92,6 +92,7 @@ L'interface permet d'envoyer une image à l’API pour analyse via **deux métho
 Le **résultat s'affiche en temps réel**, immédiatement sous l’image.  
 
 ### **Exemples de reconnaissance**  
+
 - **Image importée** → `ELLE EST CONTENTE`  
 ![contente_output](model/test_images/contente_output.png)
 - **Saisie manuscrite** → `5 POMMES`  
@@ -106,30 +107,30 @@ Dans l’ensemble, l’interface web offre une interaction fluide et une connexi
 
 ## 5. Discussion  
 
-### **5.1 Succès**  
-**Reconnaissance correcte** des chiffres et lettres imprimées.  
-**Interface fluide**, interaction en temps réel avec l’API.  
-**Système modulaire**, extensible à d'autres types de caractères.  
+### **Succès**  
+- **Reconnaissance correcte** des chiffres et lettres imprimées.  
+- **Interface fluide**, interaction en temps réel avec l’API.  
+- **Système modulaire**, extensible à d'autres types de caractères.  
 
-### **5.2 Défis**  
-**Précision plus faible** sur certaines écritures manuscrites (ex. "0" vs "O", "I" vs "L").  
-**Segmentation des caractères imparfaite** sur certains cas.  
-**Difficulté avec certains styles d'écriture**.  
+### **Défis**  
+- **Précision plus faible** sur certaines écritures manuscrites (ex. "0" vs "O", "I" vs "L").  
+- **Segmentation des caractères imparfaite** sur certains cas.  
+- **Difficulté avec certains styles d'écriture**.  
 
-### **5.3 Perspectives**  
-Entraîner un **modèle plus avancé** (ResNet, MobileNet).  
-**Améliorer la segmentation** des caractères.  
-**Augmenter le jeu de données** pour plus de diversité.  
+### **Perspectives**  
+- Entraîner un **modèle plus avancé** (ResNet, MobileNet).  
+- **Améliorer la segmentation** des caractères.  
+- **Augmenter le jeu de données** pour plus de diversité.  
 
 ---
 
 ## **6. Installation & Usage**  
 
-### **6.1 Prérequis**  
+### **Prérequis**  
 - **Python 3.11+**  
 - **FastAPI, PyTorch, OpenCV, NumPy**  
 
-### **6.2 Exécution**  
+### **Exécution**  
 **a. Installer les dépendances**  
 **b. Lancer le serveur FastAPI**: uvicorn server:app --host 0.0.0.0 --port 8000 --reload
 **c. Ouvrir l'interface web**: Ouvrir `index.html` dans un navigateur.
